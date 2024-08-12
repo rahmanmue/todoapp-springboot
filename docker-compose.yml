@@ -1,0 +1,38 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres-a-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  app:
+    container_name: todoapp
+    build: .
+    environment:
+      APP_PORT: 8081
+      HOST_DB: db
+      PORT_DB: 5432
+      DB_NAME: postgres
+      USERNAME_DB: postgres
+      PASSWORD_DB: postgres123
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+
+volumes:
+  postgres-a-data:
+networks:
+  app-network:
+    driver: bridge
